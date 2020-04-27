@@ -73,5 +73,6 @@ module Calculator =
                     Br []
                     digit 0.; btn "C" C; btn "AC" AC; btn "+" (O ( + ));
                     Br []
+                    btn "+/-" N; btn "=" E
                 ]
             ]
