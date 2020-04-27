@@ -1,0 +1,82 @@
+namespace Samples
+
+open WebSharper
+open WebSharper.JavaScript
+open WebSharper.Html.Client
+open System
+
+[<JavaScript>]
+module Calculator =
+
+    let Main =
+        let onum, num, op = ref 0., ref 0., ref None
+
+        let display = Input [Attr.Type "Text"; Attr.Value "0"]
+
+        let updateDisplay () = display.Value <- string !num
+
+        let D n =
+            num := 10. * !num + n
+            updateDisplay ()
+
+        let C () =
+            num := 0.
+            updateDisplay()
+
+        let AC () =
+            num  := 0.
+            onum := 0.
+            op   := None
+            updateDisplay ()
+
+        let N () =
+            num := - !num
+            updateDisplay ()
+
+        let E () =
+            match !op with
+            | None ->
+                ()
+            | Some f ->
+                num := f !onum !num
+                op  := None
+                updateDisplay ()
+
+        let O o () =
+            match !op with
+            | None ->
+                ()
+            | Some f ->
+                num := f !onum !num
+                updateDisplay ()
+            onum := !num
+            num  := 0.
+            op   := Some o
+
+        let btn caption action =
+            Button [Text caption]
+            |>! OnClick (fun _ _ -> action ())
+
+        let digit n =
+            btn (string n) (fun () -> D n)
+        
+        let todayBtn =
+            btn "Today" (fun () -> 
+                let todayJS = DateTime.Today.JS
+                D << float <| todayJS.GetUTCDate() )
+        
+        let calculator =
+            Div [
+                display
+                Br []
+                Div [
+                    digit 7.; digit 8.; digit 9.; btn "/" (O ( / ))
+                    Br []
+                    digit 4.; digit 5.; digit 6.; btn "*" (O ( * ))
+                    Br []
+                    digit 1.; digit 2.; digit 3.; btn "-" (O ( - ))
+                    Br []
+                    digit 0.; btn "C" C; btn "AC" AC; btn "+" (O ( + ));
+                    Br []
+                ]
+            ]
