@@ -60,11 +60,6 @@ module Calculator =
         let digit n =
             btn (string n) (fun () -> D n)
         
-        let todayBtn =
-            btn "Today" (fun () -> 
-                let todayJS = DateTime.Today.JS
-                D << float <| todayJS.GetUTCDate() )
-        
         let calculator =
             Div [
                 display
